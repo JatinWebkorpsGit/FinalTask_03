@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+	<title>Login - FriendBook</title>
+	<link rel="stylesheet" th:href="@{/css/login.css}" />
+</head>
+
+<body>
+
+	<div class="navbar">
+		<h1>FriendBook</h1>
+		<div class="nav-links">
+			<a th:href="@{/}">Home</a>
+			<a th:href="@{/about}">About</a>
+			<a th:href="@{/login}">Login</a>
+			<a th:href="@{/signup}">Register</a>
+		</div>
+	</div>
+
+	<div class="login-container">
+		<h2>Login</h2>
+		<form method="post" th:action="@{/login}">
+			<input type="email" name="username" placeholder="Email" required>
+			<input type="password" name="password" placeholder="Password" required>
+			<button type="submit">Login</button>
+		</form>
+
+		<div th:if="${param.error}" class="error-message">
+			Invalid email or password
+		</div>
+	</div>
+
+</body>
+
+</html>

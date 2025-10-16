@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+	<title>Signup - FriendBook</title>
+	<link rel="stylesheet" th:href="@{/css/signup.css}" />
+	<script src="https://www.google.com/recaptcha/api.js" async defer></script>
+</head>
+
+<body>
+	<div class="navbar">
+		<h1>FriendBook</h1>
+		<div class="nav-links">
+			<a th:href="@{/}">Home</a>
+			<a th:href="@{/about}">About</a>
+			<a th:href="@{/login}">Login</a>
+			<a th:href="@{/signup}">Register</a>
+		</div>
+	</div>
+
+	<div class="signup-container">
+		<h2>Register</h2>
+		<form id="signupForm">
+			<input type="text" id="fullName" placeholder="Full Name" required><br>
+			<input type="email" id="email" placeholder="Email" required><br>
+			<input type="password" id="password" placeholder="Password" required minlength="8" pattern=".{8,}"
+				title="Password must be atleast of 8 characters"><br>
+<!--			<div class="g-recaptcha" data-sitekey="6LcQgJsrAAAAAIh7ctqhSrxCrksu6TL2lvFWp15O"></div>-->
+			<button type="submit">Signup</button>
+		</form>
+		<div id="message"></div>
+	</div>
+
+	<div th:if="${error}" style="color: red;">
+		<p th:text="${error}"></p>
+	</div>
+
+	<script th:src="@{/js/signup.js}"></script>
+</body>
+
+</html>

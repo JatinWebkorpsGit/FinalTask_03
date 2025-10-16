@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+	<title>Feed - FriendBook</title>
+	<meta name="username" th:content="${#authentication.name}">
+	<link rel="stylesheet" th:href="@{/css/posts.css}" />
+
+</head>
+
+<body>
+
+	<div class="navbar">
+		<h1>FriendBook</h1>
+		<div class="nav-links">
+			<a th:href="@{/profile}">Profile</a>
+			<a th:href="@{/logout}">Logout</a>
+		</div>
+	</div>
+
+	<!-- Posts -->
+	<div class="container">
+		<h2>Feed - Posts from People You Follow</h2>
+		<div class="grid">
+			<div th:each="post : ${posts}" class="card">
+				<h3 th:text="${post.caption}">Caption</h3>
+
+				<!-- Media Carousel -->
+				<div class="carousel-container" th:id="'carousel-' + ${post.id}">
+					<div th:each="media,iterStat : ${post.mediaList}"
+						th:id="'media-' + ${post.id} + '-' + ${iterStat.index}"
+						th:class="${iterStat.index == 0} ? 'carousel-media active' : 'carousel-media'">
+						<!-- Image -->
+						<img th:if="${media.mediaType == 'image'}" th:src="@{'/uploads/posts/' + ${media.filePath}}"
+							alt="Post Image" />
+
+						<!-- Video -->
+						<video th:if="${media.mediaType == 'video'}" th:src="@{'/uploads/posts/' + ${media.filePath}}"
+							controls></video>
+					</div>
+					<button th:if="${post.mediaList.size() > 1}" class="carousel-btn left"
+						th:attr="onclick=|prevMedia(${post.id})|">&#10094;</button>
+					<button th:if="${post.mediaList.size() > 1}" class="carousel-btn right"
+						th:attr="onclick=|nextMedia(${post.id})|">&#10095;</button>
+				</div>
+
+				<p class="meta">
+					Posted by <b th:text="${post.user.getUsernameField()}">Username</b><br>
+					<span th:text="${#temporals.format(post.createdAt, 'dd-MM-yyyy HH:mm')}">Date</span>
+				</p>
+
+				<!-- Like Section -->
+				<div class="like-section">
+					<span th:id="'like-count-' + ${post.id}" th:text="${post.likeCount}">0</span> Likes
+					<button type="button" th:id="'like-btn-' + ${post.id}" th:attr="onclick=|toggleLike(${post.id})|">
+						Like/Unlike
+					</button>
+				</div>
+
+				<!-- Comments Section -->
+				<div th:id="'comments-' + ${post.id}">
+					<div th:each="comment : ${post.comments}">
+						<p>
+							<b th:text="${comment.user.getUsernameField()}"></b>:
+							<span th:text="${comment.text}"></span>
+							<button th:if="${comment.user.usernameField == user.usernameField}"
+								class="comment-delete-btn" th:attr="onclick=|deleteComment(${comment.id})|">
+								Delete
+							</button>
+						</p>
+					</div>
+				</div>
+
+				<!-- Comment Form -->
+				<form th:onsubmit="|submitComment(event, ${post.id})|">
+					<input type="text" name="text" placeholder="Add a comment" required />
+					<button type="submit">Comment</button>
+				</form>
+			</div>
+		</div>
+
+		<a class="back-link" th:href="@{/profile}">&larr; Back to Profile</a>
+	</div>
+
+	<script th:src="@{/js/posts.js}"></script>
+</body>
+
+</html>

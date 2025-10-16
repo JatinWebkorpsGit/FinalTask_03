@@ -1,0 +1,61 @@
+package com.friendbook.controller;
+
+import java.security.Principal;
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RestController;
+
+import com.friendbook.model.Comment;
+import com.friendbook.model.User;
+import com.friendbook.service.impl.CommentServiceImpl;
+import com.friendbook.service.impl.UserServiceImpl;
+
+@RestController
+public class CommentRestController {
+
+	@Autowired
+	private CommentServiceImpl commentService;
+
+	@Autowired
+	private UserServiceImpl userService;
+
+	@PostMapping("comments/{postId}")
+	@ResponseBody
+	public ResponseEntity<String> addComment(@PathVariable Long postId, @RequestParam("text") String text,
+			Principal principal) {
+		try {
+			User user = userService.getUserByUsername(principal.getName());
+			commentService.saveComment(postId, user, text);
+			return ResponseEntity.ok("Comment added successfully");
+		} catch (Exception e) {
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to add comment");
+		}
+	}
+
+	@GetMapping("api/comments/{postId}")
+	public List<Comment> getComments(@PathVariable Long postId) {
+		return commentService.getCommentsForPost(postId);
+	}
+
+	@DeleteMapping("/comments/delete/{commentId}")
+	public ResponseEntity<String> deleteComment(@PathVariable Long commentId, Principal principal) {
+		try {
+			User user = userService.getUserByUsername(principal.getName());
+			commentService.deleteComment(commentId, user);
+			return ResponseEntity.ok("Comment deleted successfully");
+		} catch (RuntimeException ex) {
+			return ResponseEntity.status(HttpStatus.FORBIDDEN).body(ex.getMessage());
+		} catch (Exception e) {
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error deleting comment");
+		}
+	}
+}

@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+	<title>User Profile</title>
+	<link rel="stylesheet" th:href="@{/css/user-card.css}" />
+</head>
+
+<body>
+	<div class="navbar">
+		<h1>FriendBook</h1>
+		<div class="nav-links">
+			<a th:href="@{/profile}">Profile</a>
+			<a th:href="@{/logout}">Logout</a>
+		</div>
+	</div>
+
+	<div class="card">
+		<img th:src="@{'/images/' + ${user.profileImage}}" alt="Profile Image">
+		<h2 th:text="${user.fullName}">Name</h2>
+		<p><strong>Username:</strong> <span th:text="${user.usernameField}">username</span></p>
+		<p><strong>Posts:</strong> <span th:text="${posts.size()}">0</span></p>
+		<p><strong>Followers:</strong> <span th:text="${followersCount}">0</span></p>
+		<p><strong>Following:</strong> <span th:text="${followingCount}">0</span></p>
+
+		<!-- Follow/Unfollow Button -->
+		<button class="button follow-btn" th:data-userid="${user.id}" th:text="${isFollowing} ? 'Unfollow' : 'Follow'">
+		</button>
+
+		<!-- Friend Request Button -->
+		<button class="button send-request-btn" th:data-username="${user.usernameField}"
+			th:disabled="${requestStatus == 'pending' or requestStatus == 'accepted'}"
+			th:text="${requestStatus == 'pending' ? 'Request Sent' : (requestStatus == 'accepted' ? 'Friends' : 'Send Request')}">
+		</button> 
+
+	</div>
+
+	<script th:src="@{/js/user-card.js}"></script>
+</body>
+
+</html>
