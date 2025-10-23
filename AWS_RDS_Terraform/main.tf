@@ -50,6 +50,7 @@ resource "aws_db_instance" "myDB" {
   engine_version = "8.0.43"
   allocated_storage = "10"
   password = "rootroot"
+  skip_final_snapshot = true
   vpc_security_group_ids = [ aws_security_group.name.id ]
   tags = {
 
